@@ -11,6 +11,8 @@ RUN pip install --upgrade pip && pip install .
 
 COPY app ./app
 COPY dashboard ./dashboard
+COPY alembic ./alembic
+COPY alembic.ini ./
 
 EXPOSE 8000
 
