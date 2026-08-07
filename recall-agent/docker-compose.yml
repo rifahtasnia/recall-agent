@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+    container_name: recall-agent-api
+    env_file:
+      - .env.example
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./app:/app/app
+
+  dashboard:
+    build:
+      context: .
+    container_name: recall-agent-dashboard
+    env_file:
+      - .env.example
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    command: streamlit run dashboard/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+    volumes:
+      - ./dashboard:/app/dashboard
+    depends_on:
+      - api
