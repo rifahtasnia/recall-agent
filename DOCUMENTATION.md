@@ -568,9 +568,19 @@ alembic upgrade head passed
 GitHub Actions passed
 ```
 
-## 10. Failures And Fixes
+## 10. Important Failures And Fixes
 
-This section records problems we encounter and how we solve them.
+This section records meaningful engineering issues we encounter and how we solve them.
+
+It should focus on problems that matter for real projects, such as:
+
+- CI/CD failures
+- build failures
+- database migration problems
+- production-like infrastructure issues
+- test failures that reveal real defects
+
+Minor local environment issues should not be documented here unless they teach an important reusable lesson.
 
 ### GitHub Actions Workflow Push Rejected
 
@@ -591,48 +601,6 @@ The GitHub CLI token did not have permission to create or update workflow files.
 Fix:
 
 Refreshed GitHub CLI authentication with the `workflow` scope, then pushed again.
-
-### Local Dependency Install Failed In Sandbox
-
-Problem:
-
-Installing Python dependencies failed at first.
-
-Cause:
-
-The sandbox could not reach PyPI without explicit network permission.
-
-Fix:
-
-Reran the dependency installation with approved network access.
-
-### Docker Daemon Permission Issue
-
-Problem:
-
-The first Docker build attempt failed because the environment could not access the Docker daemon socket.
-
-Cause:
-
-Docker requires elevated access outside the default sandbox.
-
-Fix:
-
-Reran Docker commands with approved Docker daemon access.
-
-### Local curl Could Not Reach Docker Port In Sandbox
-
-Problem:
-
-The first `curl http://localhost:8000/health` attempt failed.
-
-Cause:
-
-The sandboxed command could not connect to the local Docker-exposed port.
-
-Fix:
-
-Reran the health check with approved local network access.
 
 ### PostgreSQL Enum Duplicate Error
 
