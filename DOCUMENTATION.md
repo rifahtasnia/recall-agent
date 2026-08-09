@@ -570,17 +570,7 @@ GitHub Actions passed
 
 ## 10. Important Failures And Fixes
 
-This section records meaningful engineering issues we encounter and how we solve them.
-
-It should focus on problems that matter for real projects, such as:
-
-- CI/CD failures
-- build failures
-- database migration problems
-- production-like infrastructure issues
-- test failures that reveal real defects
-
-Minor local environment issues should not be documented here unless they teach an important reusable lesson.
+This section documents significant issues encountered during development and how they were resolved. Each note is included because it affects project reliability, deployment, database correctness, or CI/CD workflow.
 
 ### GitHub Actions Workflow Push Rejected
 
