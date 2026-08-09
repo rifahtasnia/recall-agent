@@ -1,6 +1,6 @@
 # RecallAgent Documentation
 
-This document explains the project decisions behind RecallAgent step by step. The README stays short and product-focused; this file is the deeper technical and design reference.
+This document explains the project decisions behind RecallAgent step by step. This file is the deeper technical and design reference.
 
 ## 1. Project Purpose
 
@@ -14,7 +14,7 @@ RecallAgent is designed to store service history, identify when customers may be
 
 ### Decision
 
-Build RecallAgent as a simple multi-agent workflow, not as one large generic agent.
+Build RecallAgent as a simple multi-agent workflow.
 
 ### Why
 
@@ -26,7 +26,7 @@ The system has several clear responsibilities:
 - Schedule or queue the reminder
 - Log the decision
 
-Splitting these responsibilities keeps the project easier to explain, test, and extend.
+Splitting these responsibilities keeps the project easier to understand, test, and extend.
 
 ### Current Planned Agents
 
@@ -42,39 +42,8 @@ Splitting these responsibilities keeps the project easier to explain, test, and 
 4. **Reminder Scheduler Agent**
    Adds the reminder to a queue for review or delivery.
 
-### Why Not More Agents
 
-Earlier, we considered a larger design with separate agents for customer profile, compliance, delivery, analytics, and service pattern analysis. That design was more complex than necessary for a portfolio MVP.
-
-The current design keeps the project simple while still showing real agentic structure.
-
-## 3. Repository Structure Decision
-
-### Decision
-
-Keep the GitHub repository root as the existing local folder, and place the actual application code inside:
-
-```text
-recall-agent/
-```
-
-### Why
-
-The local folder already existed as:
-
-```text
-AI Agent Builder/
-```
-
-The GitHub repository is named:
-
-```text
-recall-agent
-```
-
-GitHub repository names and local folder names do not have to match. To keep the app code clean, we created an inner `recall-agent/` folder for the actual application.
-
-Current structure:
+## 3. Repository Structure 
 
 ```text
 AI Agent Builder/
@@ -97,7 +66,7 @@ AI Agent Builder/
 
 ### Python
 
-RecallAgent is Python-first because the project owner wants to learn and showcase Python backend and AI-agent development.
+RecallAgent is Python-first because Python backend development is reliable and widely used for AI agent development.
 
 ### FastAPI
 
@@ -108,7 +77,7 @@ Necessity:
 - Creates API endpoints
 - Provides automatic API documentation
 - Works well with Pydantic
-- Is simple enough for a portfolio project but production-ready enough for real systems
+- Is production-ready for real systems
 
 Current endpoints:
 
@@ -145,9 +114,7 @@ Necessity:
 
 ### SQLAlchemy
 
-SQLAlchemy is used as the ORM.
-
-ORM means Object Relational Mapper.
+SQLAlchemy is used as the ORM (Object Relational Mapper).
 
 Necessity:
 
@@ -294,7 +261,7 @@ created_at
 
 Why it exists:
 
-Even if the first version supports only one business, this table makes the design ready for multiple businesses later.
+This table makes the design ready for multiple businesses.
 
 Relationship:
 
@@ -604,38 +571,6 @@ GitHub Actions passed
 ## 10. Failures And Fixes
 
 This section records problems we encounter and how we solve them.
-
-### GitHub Commit Attribution Issue
-
-Problem:
-
-GitHub initially showed a different account as the committer.
-
-Cause:
-
-GitHub maps commits to accounts by commit email. The local git email was not the desired GitHub email.
-
-Fix:
-
-Updated the local repository git config:
-
-```text
-user.name = rifahtasnia
-user.email = rifahtasnia@iut-dhaka.edu
-```
-
-Then amended the commit and force-pushed the corrected one-commit history.
-
-Permanent recommendation:
-
-Set global git identity for future repositories:
-
-```bash
-git config --global user.name "rifahtasnia"
-git config --global user.email "rifahtasnia@iut-dhaka.edu"
-```
-
-Also ensure that email is verified in GitHub.
 
 ### GitHub Actions Workflow Push Rejected
 
