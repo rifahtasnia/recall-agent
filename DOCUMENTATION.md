@@ -614,11 +614,13 @@ Lesson:
 
 PostgreSQL enum types are database-level objects. When using Alembic and SQLAlchemy together, enum creation must be handled carefully to avoid duplicate type creation.
 
-## 11. Next Planned Step
+## 11. Milestone 3: API Layer For Core Data
 
-The next step is to build API endpoints for the database models.
+Milestone 3 builds the API layer for the core database models. This allows the application to create, read, and manage the business data that the agent workflow will later analyze.
 
-Likely endpoints:
+This milestone focuses on turning the database schema into usable backend functionality. The API provides endpoints for managing businesses, customers, service types, service records, reminders, and agent logs.
+
+Planned endpoints:
 
 ```text
 POST /businesses
@@ -633,8 +635,13 @@ GET /reminders
 GET /agent-logs
 ```
 
-Why this comes next:
+The purpose of this milestone is to make the application data-driven before introducing agent logic. Once these endpoints are available, RecallAgent can store real service history and expose that data to the dashboard and future LangGraph workflow.
 
-Before adding LangGraph and agents, we need a way to create and read the core data through the API.
+Expected outcome:
 
-After CRUD endpoints are working, we can add seed data and then build the rule-based reminder workflow.
+```text
+Business and customer data can be created through the API.
+Service types and service records can be stored in PostgreSQL.
+Reminder and agent log records can be retrieved for dashboard display.
+The backend has a clean API foundation for the upcoming reminder workflow.
+```
