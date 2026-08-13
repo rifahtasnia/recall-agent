@@ -85,3 +85,23 @@ class AgentLogRead(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ReminderRunDecisionRead(BaseModel):
+    service_record_id: int
+    customer_id: int
+    service_type_id: int
+    decision: AgentLogStatus
+    reason: str
+    reminder_id: int | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ReminderRunRead(BaseModel):
+    processed: int
+    created: int
+    skipped: int
+    details: list[ReminderRunDecisionRead]
+
+    model_config = ConfigDict(from_attributes=True)

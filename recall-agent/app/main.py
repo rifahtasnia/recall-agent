@@ -5,6 +5,7 @@ from app.api.routes import (
     agent_logs,
     businesses,
     customers,
+    reminder_runs,
     reminders,
     service_records,
     service_types,
@@ -25,6 +26,7 @@ app.include_router(service_types.router)
 app.include_router(service_records.router)
 app.include_router(reminders.router)
 app.include_router(agent_logs.router)
+app.include_router(reminder_runs.router)
 
 
 @app.get("/health")
