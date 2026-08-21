@@ -4,6 +4,7 @@ from sqlalchemy import text
 from app.api.routes import (
     agent_logs,
     businesses,
+    customer_frequency_insights,
     customers,
     reminder_runs,
     reminders,
@@ -26,6 +27,7 @@ app.include_router(service_types.router)
 app.include_router(service_records.router)
 app.include_router(reminders.router)
 app.include_router(agent_logs.router)
+app.include_router(customer_frequency_insights.router)
 app.include_router(reminder_runs.router)
 
 

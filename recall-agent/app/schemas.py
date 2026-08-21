@@ -87,6 +87,22 @@ class AgentLogRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class CustomerFrequencyInsightRead(BaseModel):
+    customer_id: int
+    customer_name: str
+    service_type_id: int
+    service_name: str
+    record_count: int
+    service_dates: list[date]
+    default_interval_days: int
+    average_gap_days: int | None
+    effective_interval_days: int
+    source: str
+    reason: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ReminderRunDecisionRead(BaseModel):
     service_record_id: int
     customer_id: int

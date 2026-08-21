@@ -11,6 +11,7 @@ from app.db.models import (
     ReminderStatus,
     ServiceRecord,
 )
+from app.services.customer_frequency import get_frequency_insight_for_record
 
 AGENT_NAME = "RuleBasedReminderWorkflow"
 
@@ -49,9 +50,15 @@ def run_rule_based_reminder_workflow(
     )
 
     details: list[ReminderRunDecision] = []
+    latest_service_record_ids = get_latest_service_record_ids(service_records)
 
     for service_record in service_records:
-        decision = evaluate_service_record(db, service_record, today)
+        decision = evaluate_service_record(
+            db,
+            service_record,
+            today,
+            latest_service_record_ids=latest_service_record_ids,
+        )
         details.append(decision)
 
     db.commit()
@@ -68,12 +75,29 @@ def run_rule_based_reminder_workflow(
 
 
 def evaluate_service_record(
-    db: Session, service_record: ServiceRecord, today: date
+    db: Session,
+    service_record: ServiceRecord,
+    today: date,
+    latest_service_record_ids: set[int] | None = None,
 ) -> ReminderRunDecision:
     customer = service_record.customer
     service_type = service_record.service_type
+    latest_service_record_ids = latest_service_record_ids or {service_record.id}
+
+    if service_record.id not in latest_service_record_ids:
+        return log_decision(
+            db,
+            service_record=service_record,
+            decision=AgentLogStatus.skipped,
+            reason=(
+                "A newer service record exists for this customer and service type, "
+                "so this older record is only used as frequency history."
+            ),
+        )
+
+    frequency_insight = get_frequency_insight_for_record(db, service_record)
     due_date = service_record.service_date + timedelta(
-        days=service_type.recommended_interval_days
+        days=frequency_insight.effective_interval_days
     )
 
     if today < due_date:
@@ -84,8 +108,9 @@ def evaluate_service_record(
             decision=AgentLogStatus.skipped,
             reason=(
                 f"{service_type.name} is not due yet. "
-                f"Recommended interval is {service_type.recommended_interval_days} "
-                f"days; due in {days_until_due} day(s) on {due_date}."
+                f"Effective interval is {frequency_insight.effective_interval_days} "
+                f"days from {frequency_insight.source}; due in "
+                f"{days_until_due} day(s) on {due_date}."
             ),
         )
 
@@ -141,11 +166,30 @@ def evaluate_service_record(
         decision=AgentLogStatus.created,
         reason=(
             f"{customer.full_name} is {days_since_service} days past "
-            f"{service_type.name}. Recommended interval is "
-            f"{service_type.recommended_interval_days} days."
+            f"{service_type.name}. Effective interval is "
+            f"{frequency_insight.effective_interval_days} days from "
+            f"{frequency_insight.source}."
         ),
         reminder_id=reminder.id,
     )
+
+
+def get_latest_service_record_ids(service_records: list[ServiceRecord]) -> set[int]:
+    latest_records: dict[tuple[int, int], ServiceRecord] = {}
+
+    for service_record in service_records:
+        key = (service_record.customer_id, service_record.service_type_id)
+        current_latest = latest_records.get(key)
+        if current_latest is None or (
+            service_record.service_date,
+            service_record.id,
+        ) > (
+            current_latest.service_date,
+            current_latest.id,
+        ):
+            latest_records[key] = service_record
+
+    return {service_record.id for service_record in latest_records.values()}
 
 
 def get_missing_contact_reason(

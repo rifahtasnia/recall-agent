@@ -44,14 +44,16 @@ service_types = fetch_json("/service-types") or []
 service_records = fetch_json("/service-records") or []
 reminders = fetch_json("/reminders") or []
 agent_logs = fetch_json("/agent-logs") or []
+frequency_insights = fetch_json("/customer-frequency-insights") or []
 
-metric_columns = st.columns(6)
+metric_columns = st.columns(7)
 metric_columns[0].metric("Businesses", len(businesses))
 metric_columns[1].metric("Customers", len(customers))
 metric_columns[2].metric("Service Types", len(service_types))
 metric_columns[3].metric("Service Records", len(service_records))
 metric_columns[4].metric("Reminders", len(reminders))
 metric_columns[5].metric("Agent Logs", len(agent_logs))
+metric_columns[6].metric("Frequency Insights", len(frequency_insights))
 
 tabs = st.tabs(
     [
@@ -61,6 +63,7 @@ tabs = st.tabs(
         "Service Records",
         "Reminders",
         "Agent Logs",
+        "Frequency Insights",
     ]
 )
 
@@ -89,6 +92,9 @@ with tabs[4]:
 
 with tabs[5]:
     show_table(agent_logs, "No agent decisions have been logged yet.")
+
+with tabs[6]:
+    show_table(frequency_insights, "No customer frequency insights available yet.")
 
 with st.expander("Raw API health payloads"):
     st.json({"api": health, "database": db_health})

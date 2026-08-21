@@ -119,3 +119,28 @@ def test_reminder_run_prevents_duplicate_reminders(client: TestClient) -> None:
     assert second_run["created"] == 0
     assert second_run["skipped"] == 1
     assert "already exists" in second_run["details"][0]["reason"]
+
+
+def test_reminder_run_uses_customer_history_interval_for_repeated_service(
+    client: TestClient,
+) -> None:
+    records = create_base_records(client, interval_days=14, days_ago=50)
+    client.post(
+        "/service-records",
+        json={
+            "customer_id": records["customer"]["id"],
+            "service_type_id": records["service_type"]["id"],
+            "service_date": str(date.today() - timedelta(days=20)),
+        },
+    )
+
+    payload = client.post("/reminder-runs").json()
+
+    assert payload["processed"] == 2
+    assert payload["created"] == 0
+    assert payload["skipped"] == 2
+    assert "newer service record exists" in payload["details"][0]["reason"]
+    assert (
+        "Effective interval is 30 days from customer_history"
+        in payload["details"][1]["reason"]
+    )
