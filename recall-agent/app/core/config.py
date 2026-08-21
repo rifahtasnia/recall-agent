@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "RecallAgent"
     app_env: str = "development"
+    openai_api_key: str | None = None
     database_url: str = (
         "postgresql+psycopg://recall_agent:recall_agent@localhost:5432/recall_agent"
     )

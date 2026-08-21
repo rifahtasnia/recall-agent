@@ -3,6 +3,7 @@ from datetime import date, datetime
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.db.models import AgentLogStatus, ReminderStatus
+from app.services.llm_reminder_agent import LLMReminderDecision
 
 
 class BusinessCreate(BaseModel):
@@ -119,5 +120,28 @@ class ReminderRunRead(BaseModel):
     created: int
     skipped: int
     details: list[ReminderRunDecisionRead]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LLMReminderRunDecisionRead(BaseModel):
+    service_record_id: int
+    customer_id: int
+    service_type_id: int
+    decision: LLMReminderDecision
+    reason: str
+    source: str
+    rule_recommendation: LLMReminderDecision
+    rule_reason: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LLMReminderRunRead(BaseModel):
+    processed: int
+    send_reminder: int
+    skip_reminder: int
+    needs_review: int
+    details: list[LLMReminderRunDecisionRead]
 
     model_config = ConfigDict(from_attributes=True)

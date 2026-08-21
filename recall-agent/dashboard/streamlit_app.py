@@ -96,5 +96,17 @@ with tabs[5]:
 with tabs[6]:
     show_table(frequency_insights, "No customer frequency insights available yet.")
 
+with st.expander("Run LLM-assisted decision agent"):
+    st.caption("Creates agent decision logs. Reminder records are not sent from here.")
+    if st.button("Run decision agent"):
+        try:
+            response = requests.post(f"{API_URL}/llm-reminder-runs", timeout=10)
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            st.error(f"Could not run LLM decision agent: {exc}")
+        else:
+            st.success("LLM-assisted decision run completed")
+            st.json(response.json())
+
 with st.expander("Raw API health payloads"):
     st.json({"api": health, "database": db_health})
